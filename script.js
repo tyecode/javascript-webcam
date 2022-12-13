@@ -9,8 +9,9 @@
     let takePhoto = document.getElementById('take-photo-button');
     let cameraButton =  document.getElementById('camera-button');
     let downloadButton =  document.getElementById('download-btn');
+    let shutterSound = new Audio('./camera-shutter.mp3');
 
-    function startup() {
+    function startUp() {
         navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
@@ -23,10 +24,10 @@
                 console.log("An error occurred: " + err);
             });
 
-        clearphoto();
+        clearPhoto();
     }
 
-    function clearphoto() {
+    function clearPhoto() {
         let context = canvas.getContext('2d');
         context.fillStyle = "#AAA";
         context.fillRect(0, 0, canvas.width, canvas.height);
@@ -35,8 +36,9 @@
         photo.setAttribute('src', data);
     }
 
-    function takepicture() {
+    function takePicture() {
         let context = canvas.getContext('2d');
+        
         if (width && height) {
             canvas.width = width;
             canvas.height = height;
@@ -45,18 +47,19 @@
             let data = canvas.toDataURL('image/jpeg');
             photo.setAttribute('src', data);
         } else {
-            clearphoto();
+            clearPhoto();
         }
     }
 
     function turnOff() {
         video.srcObject.getVideoTracks().forEach((track) => track.stop());
         video.srcObject = null;
-        clearphoto();
+        clearPhoto();
     }
 
     takePhoto.addEventListener('click', function(ev) {
-        takepicture();
+        shutterSound.play();
+        takePicture();
         ev.preventDefault();
     }, false);
     
@@ -71,7 +74,7 @@
     cameraButton.addEventListener('click', () => {
         if(cameraButton.innerHTML == 'Turn on') {
             cameraButton.innerHTML = 'Turn off';
-            startup();
+            startUp();
         } else {
             cameraButton.innerHTML = 'Turn on';
             turnOff();
